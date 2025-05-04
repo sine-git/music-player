@@ -19,13 +19,19 @@ class NeuBox extends StatelessWidget {
           boxShadow: [
             // Darker shadow on bottom right
             BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 15,
-                offset: Offset(4, 4)),
+                color: Theme.of(context)
+                    .colorScheme
+                    .inversePrimary
+                    .withValues(alpha: 0.2),
+                blurRadius: 0.5,
+                offset: Offset(1, 1)),
             BoxShadow(
-                color: Colors.grey.shade500,
-                blurRadius: 15,
-                offset: Offset(-4, -4))
+                color: Theme.of(context)
+                    .colorScheme
+                    .inversePrimary
+                    .withValues(alpha: 0.2),
+                blurRadius: 0.5,
+                offset: Offset(-1, -1))
             // Lighter shadow on top left
           ]),
       child: child,

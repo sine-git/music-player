@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late final dynamic playlistProvider;
+  late final PlayListProvider playlistProvider;
 
   @override
   void initState() {
@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    playlistProvider.getPlayList(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -51,10 +52,14 @@ class _HomePageState extends State<HomePage> {
           itemBuilder: (context, index) {
             Song song = value.playlist[index];
             return ListTile(
-              leading: Image.asset(
-                song.albumArtImagePath,
-                fit: BoxFit.cover,
-              ),
+              leading: song.albumArt != null
+                  ? Image.memory(
+                      song.albumArt!,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      '${imagesSourcePath}music_player.webp',
+                    ),
               title: Text(
                 "${song.songName}",
                 style: TextStyle(

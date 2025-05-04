@@ -44,7 +44,9 @@ class _SongPageState extends State<SongPage> {
           appBar: AppBar(
             iconTheme: Theme.of(context).iconTheme,
             centerTitle: true,
-            title: Text("Song page"),
+            title: Text(
+              currentSong.songName,
+            ),
             actions: [IconButton(onPressed: () {}, icon: Icon(Icons.menu))],
           ),
           body: SingleChildScrollView(
@@ -58,13 +60,21 @@ class _SongPageState extends State<SongPage> {
                         borderRadius: BorderRadius.circular(8),
                         child: Column(
                           children: [
-                            Image.asset(
-                              currentSong.albumArtImagePath,
-                              fit: BoxFit.cover,
-                              height: MediaQuery.of(context).size.width * 0.65,
-                              width: double.infinity,
-                              alignment: Alignment.topCenter,
-                            ),
+                            currentSong.albumArt != null
+                                ? Image.memory(
+                                    currentSong.albumArt!,
+                                    fit: BoxFit.cover,
+                                    height: MediaQuery.of(context).size.width *
+                                        0.65,
+                                    width: double.infinity,
+                                  )
+                                : Image.asset(
+                                    '${imagesSourcePath}music_player.webp',
+                                    fit: BoxFit.cover,
+                                    height: MediaQuery.of(context).size.width *
+                                        0.65,
+                                    width: double.infinity,
+                                  ),
                             Padding(
                               padding:
                                   const EdgeInsets.only(top: 10, bottom: 20),
