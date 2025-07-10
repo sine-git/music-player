@@ -76,9 +76,24 @@ class _SongPageState extends State<SongPage> {
                                     width: double.infinity,
                                   ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 10, bottom: 20),
-                              child: Row(
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 20),
+                                child: ListTile(
+                                  title: Text(
+                                    currentSong.songName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    currentSong.artistName,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
+
+                                /* Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
@@ -90,7 +105,6 @@ class _SongPageState extends State<SongPage> {
                                       Text(
                                         currentSong.songName,
                                         overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
@@ -111,8 +125,8 @@ class _SongPageState extends State<SongPage> {
                                     ),
                                   )
                                 ],
-                              ),
-                            ),
+                              ), */
+                                ),
                           ],
                         )),
                   ),

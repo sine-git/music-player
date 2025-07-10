@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    playlistProvider.getPlayList(context);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -47,33 +46,51 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: MyDrawer(),
       body: Consumer<PlayListProvider>(
-        builder: (context, value, child) => ListView.builder(
-          itemCount: value.playlist.length,
-          itemBuilder: (context, index) {
-            Song song = value.playlist[index];
-            return ListTile(
-              leading: song.albumArt != null
-                  ? Image.memory(
-                      song.albumArt!,
-                      fit: BoxFit.cover,
-                    )
-                  : Image.asset(
-                      '${imagesSourcePath}music_player.webp',
-                    ),
-              title: Text(
-                "${song.songName}",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.inversePrimary),
-              ),
-              subtitle: Text("${song.artistName}",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary)),
-              onTap: () {
-                goToSong(index);
-              },
-            );
-          },
-        ),
+        builder: (context, value, child) => FutureBuilder(
+            future: playlistProvider.getPlayList(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(
+                    child:
+                        Text("Impossible de récuperer la liste des chansons"));
+              } else if (!snapshot.hasData) {
+                return Center(
+                    child:
+                        Text("Impossible de récuperer la liste des chansons"));
+              } else
+                return ListView.builder(
+                  itemCount: value.playlist.length,
+                  itemBuilder: (context, index) {
+                    Song song = value.playlist[index];
+                    return ListTile(
+                      leading: song.albumArt != null
+                          ? Image.memory(
+                              song.albumArt!,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              '${imagesSourcePath}music_player.webp',
+                            ),
+                      title: Text(
+                        "${song.songName}",
+                        style: TextStyle(
+                            color:
+                                Theme.of(context).colorScheme.inversePrimary),
+                      ),
+                      subtitle: Text("${song.artistName}",
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .inversePrimary)),
+                      onTap: () {
+                        goToSong(index);
+                      },
+                    );
+                  },
+                );
+            }),
       ),
     );
   }

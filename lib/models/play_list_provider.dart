@@ -43,6 +43,7 @@ class PlayListProvider extends ChangeNotifier {
   /* G E T T E R S */
 
   List<Song> get playlist => _playlist;
+
   int? get currentSongIndex => _currentSongIndex;
   bool get isPlaying => _isPlaying;
   Duration get currentDuration => _currentDuration;
@@ -78,13 +79,14 @@ class PlayListProvider extends ChangeNotifier {
 
   // Play the song
 
-  Future<void> getPlayList(BuildContext context) async {
+  Future<List<Song>> getPlayList(BuildContext context) async {
     _playlist = [];
     var permission = await Permission.audio.request();
     if (permission.isGranted) {
-      await getMp3Files();
-      if (_playlist.isEmpty) {
-        showDialog(
+      List song = await getMp3Files();
+      if (song.isEmpty) throw Exception(".... Aucune chanson trouvée");
+      /*  if (_playlist.isEmpty) {
+        /* showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: Text("Sorry no music found...."),
@@ -96,31 +98,22 @@ class PlayListProvider extends ChangeNotifier {
                   child: Text("Close"))
             ],
           ),
-        );
-      }
+        ); */
+      } */
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Permission denied"),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Close"))
-          ],
-        ),
-      );
+      throw Exception(".... Autorisation non accordée");
     }
+
+    return _playlist;
   }
 
-  Future<List<FileSystemEntity>> getMp3Files() async {
+  Future<List<Song>> getMp3Files() async {
     // Getting the root directory for android
     Directory directory = Directory('/storage/emulated/0/Download');
 
     List<FileSystemEntity> mp3Files = [];
 
+    List<Song> songList = [];
     // Checking if the directory exist
 
     final exist = await directory.exists();
@@ -137,33 +130,26 @@ class PlayListProvider extends ChangeNotifier {
       // Checking if the file type is mp3
       if (entity is File && entity.path.endsWith(".mp3")) {
         print(".....Music found and is ${entity.path}");
-        /*  String songName =
-            entity.path.replaceAll("/storage/emulated/0/Download/", ""); */
-
-        // Trying to song metadatas such as the name of the artist, and the album photo
         final metaData = await FlutterMediaMetadataNew.getMetadata(entity.path);
-
         final songName = metaData.trackName ??
             entity.path.replaceAll("/storage/emulated/0/Download/", "");
         final artistName = metaData.authorName ?? songName;
-
         // Getting the song album art or use the default one on the UI
         final Uint8List? albumArth = metaData.albumArt;
-        final File songFile = File('${imagesSourcePath}music_player.webp');
-
         // Adding the found file to the playlist
-        playlist.add(
+        songList.add(
           Song(
               songName: songName,
               artistName: artistName,
               albumArt: albumArth,
               audioPath: entity.path),
         );
+        _playlist = songList;
       }
       notifyListeners();
+      return _playlist;
     }
-
-    return [];
+    return _playlist;
   }
 
   void play() async {
@@ -212,6 +198,8 @@ class PlayListProvider extends ChangeNotifier {
       if (_currentSongIndex! < _playlist.length - 1) {
         // got to the next song if it's not the last song
         currentSongIndex = _currentSongIndex! + 1;
+      } else {
+        currentSongIndex = 0;
       }
     }
   }
