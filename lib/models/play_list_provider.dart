@@ -79,12 +79,14 @@ class PlayListProvider extends ChangeNotifier {
 
   // Play the song
 
-  Future<List<Song>> getPlayList(BuildContext context) async {
+  Future<List<Song>> getPlayList() async {
     _playlist = [];
     var permission = await Permission.audio.request();
     if (permission.isGranted) {
       List song = await getMp3Files();
+      print("....Songs gotten");
       if (song.isEmpty) throw Exception(".... Aucune chanson trouvée");
+      return _playlist;
       /*  if (_playlist.isEmpty) {
         /* showDialog(
           context: context,
@@ -103,8 +105,6 @@ class PlayListProvider extends ChangeNotifier {
     } else {
       throw Exception(".... Autorisation non accordée");
     }
-
-    return _playlist;
   }
 
   Future<List<Song>> getMp3Files() async {
@@ -147,8 +147,8 @@ class PlayListProvider extends ChangeNotifier {
         _playlist = songList;
       }
       notifyListeners();
-      return _playlist;
     }
+    print("...... Fin de la boucle");
     return _playlist;
   }
 

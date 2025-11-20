@@ -10,8 +10,9 @@ ThemeData darkMode = ThemeData(
     appBarTheme: AppBarTheme(
         backgroundColor: Colors.grey.shade900,
         titleTextStyle: TextStyle(color: Colors.grey.shade300, fontSize: 20)),
-    colorScheme: ColorScheme.light(
-        background: Colors.grey.shade900,
+    colorScheme: ColorScheme.dark(
+        surface: Colors.grey.shade900,
+        inverseSurface: Colors.grey.shade100,
         primary: Colors.grey.shade600,
         secondary: Colors.grey.shade800,
         inversePrimary: Colors.grey.shade300));

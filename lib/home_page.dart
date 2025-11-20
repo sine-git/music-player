@@ -15,12 +15,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final PlayListProvider playlistProvider;
-
+  late final _gettingListFuture;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     playlistProvider = Provider.of<PlayListProvider>(context, listen: false);
+    _gettingListFuture = playlistProvider.getPlayList();
   }
 
   void goToSong(int songIndex) {
@@ -42,12 +43,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         iconTheme: Theme.of(context).iconTheme,
         centerTitle: true,
-        title: Text("P L A Y L I S T"),
+        title: Text(
+          "P L A Y L I S T",
+        ),
       ),
       drawer: MyDrawer(),
       body: Consumer<PlayListProvider>(
         builder: (context, value, child) => FutureBuilder(
-            future: playlistProvider.getPlayList(context),
+            future: _gettingListFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -60,35 +63,51 @@ class _HomePageState extends State<HomePage> {
                     child:
                         Text("Impossible de récuperer la liste des chansons"));
               } else
-                return ListView.builder(
-                  itemCount: value.playlist.length,
-                  itemBuilder: (context, index) {
-                    Song song = value.playlist[index];
-                    return ListTile(
-                      leading: song.albumArt != null
-                          ? Image.memory(
-                              song.albumArt!,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              '${imagesSourcePath}music_player.webp',
-                            ),
-                      title: Text(
-                        "${song.songName}",
-                        style: TextStyle(
-                            color:
-                                Theme.of(context).colorScheme.inversePrimary),
-                      ),
-                      subtitle: Text("${song.artistName}",
+                return Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: ListView.builder(
+                    itemCount: value.playlist.length,
+                    itemBuilder: (context, index) {
+                      Song song = value.playlist[index];
+                      return ListTile(
+                        leading: song.albumArt != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: Image.memory(
+                                  song.albumArt!,
+                                  fit: BoxFit.cover,
+                                  width: 50,
+                                  height: 50,
+                                ),
+                              )
+                            : Image.asset(
+                                '${imagesSourcePath}music_player.webp',
+                                width: 50,
+                                height: 50,
+                              ),
+                        title: Text(
+                          maxLines: 1,
+                          "${song.songName}",
                           style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .inversePrimary)),
-                      onTap: () {
-                        goToSong(index);
-                      },
-                    );
-                  },
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Theme.of(context).colorScheme.inversePrimary,
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                        subtitle: Text("${song.artistName}",
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary,
+                                overflow: TextOverflow.ellipsis)),
+                        onTap: () {
+                          goToSong(index);
+                        },
+                      );
+                    },
+                  ),
                 );
             }),
       ),

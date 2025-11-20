@@ -59,6 +59,7 @@ class _SongPageState extends State<SongPage> {
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             currentSong.albumArt != null
                                 ? Image.memory(
@@ -77,12 +78,15 @@ class _SongPageState extends State<SongPage> {
                                   ),
                             Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 10, bottom: 20),
+                                    const EdgeInsets.only(top: 10, bottom: 16),
                                 child: ListTile(
                                   title: Text(
                                     currentSong.songName,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .inversePrimary,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
@@ -90,6 +94,10 @@ class _SongPageState extends State<SongPage> {
                                   subtitle: Text(
                                     currentSong.artistName,
                                     overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .inversePrimary),
                                   ),
                                 )
 

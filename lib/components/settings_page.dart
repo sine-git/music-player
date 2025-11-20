@@ -29,7 +29,11 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Dark mode
-            Text("Dark Mode"),
+            Text(
+              "Dark Mode",
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.inverseSurface),
+            ),
             // Switch
             CupertinoSwitch(
               value:
